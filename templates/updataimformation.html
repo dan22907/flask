@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block title %}个人信息{% endblock %}
+
+{% block head %}
+    <link rel="stylesheet" href="{{ url_for('static',filename='css/imformation.css') }}">
+{% endblock %}
+
+
+{% block body %}
+<div>
+    <form action="{{ url_for('user_api.updataimformation') }}" method="post">
+        <ul style="list-style-type: none">
+            <li>
+            <span style="width:20px">性别：</span><input type="text" name="sex">
+            </li>
+            <li>
+            <span style="width:20px"> 个性签名：</span><input type="text" name="signature">
+            </li>
+            <li>
+            <span style="width:20px">居住地：</span><input type="text" name="lived">
+            </li>
+        </ul>
+        <button type="submit">提交</button>
+    </form>
+</div>
+
+{% endblock %}

@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+
+{% block title %}个人信息{% endblock %}
+
+{% block head %}
+    <link rel="stylesheet" href="{{ url_for('static',filename='css/imformation.css') }}">
+{% endblock %}
+
+{% block body %}
+    <div style="margin: 20px 20px; text-align: center">
+        <p><img style="height: 60px;width: 60px" src="{{ url_for('static',filename=user.avartar) }}" alt=""></p>
+        <div>
+            <div></div>
+            <p>用户名：{{ user.username }}</p>
+            <p>性别：{{ user.sex }}</p>
+            <p>邮箱：{{ user.email }}</p>
+            <p>居住地：{{ user.lived }}</p>
+            <div>
+                <p>个性签名：{{ user.signature }}</p>
+                <form action="{{ url_for('user_api.updataimformation') }}" >
+                    <button type="submit">修改资料</button>
+                </form>
+            </div>
+
+        </div>
+    </div>
+
+    <div>
+        <ul  style="text-align: center" id="nav">
+            <li ><a href="{{ url_for('user_api.imformationview') }}">全部文章</a></li>
+            <li ><a href="">全部评论</a></li>
+        </ul>
+    </div>
+
+    <div class="row" style="margin-top: 20px;">
+        <div class="col"></div>
+        <div class="col-8">
+            <ul class="question-ul">
+                {% for comment1 in user.first_comments %}
+                    <li>
+                        <div class="question-main">
+                            <a href="{{ url_for('article.article_detail',article_id=comment1.article.id) }}"><div class="question-content">{{ comment1.content }}</div></a>
+                            <div class="question-detail">
+                                <span class="question-time">{{ comment1.create_time }}</span>
+                            </div>
+                        </div>
+                    </li>
+                {% endfor %}
+
+                {% for comment2 in user.second_comments %}
+                    <li>
+                        <div class="question-main">
+                            <a href="{{ url_for('article.article_detail',article_id=comment2.article.id) }}"><div class="question-content">{{ comment2.content }}</div></a>
+                            <div class="question-detail">
+                                <span class="question-time">{{ comment2.create_time }}</span>
+                            </div>
+                        </div>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+        <div class="col"></div>
+    </div>
+{% endblock %}

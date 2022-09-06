@@ -1,0 +1,94 @@
+{% extends "base.html" %}
+
+{% block title %}{{ article.title }}{% endblock %}
+
+
+{% block head %}
+    <script src="{{ url_for('static',filename='jquery/jquery.3.6.min.js') }}"></script>
+{#    <script src="{{ url_for('static',filename='js/agree.js') }}"></script>#}
+    <link rel="stylesheet" href="{{ url_for('static',filename='css/detail.css') }}">
+{% endblock %}
+
+
+{% block body %}
+    <div class="row" style="margin-top: 20px;">
+        <div class="col"></div>
+        <div class="col-8" style="background-color: #fff;padding: 20px;">
+            <h3 class="page-title">{{ article.title }}</h3>
+            <p class="question-info">
+
+                <span>作者：{{ article.author.username }}</span>
+                <span>时间：{{ article.create_time }}</span>
+                <span>
+                    <form action="{{ url_for("article.star",article_id=article.id) }}" method="post">
+                        {% if sign == 1 %}
+                            <button style="float: right;margin-top: 20px;padding-right: 0px;border: none;background-color: white"><span>🤍{{ article.stars }}</span></button>
+                        {% else %}
+                            <button style="float: right;margin-top: 20px;padding-right: 0px;border: none;background-color: white">❤{{ article.stars }}</button>
+                        {% endif %}
+                    </form>
+                </span>
+            </p>
+            <hr>
+            <p class="question-content">{{ article.content }}</p>
+            <hr>
+
+            <h4 class="comment-group-title">评论（{{ article.comments|length }}）：</h4>
+            <form action="{{ url_for('comment_api.firstcommentview',article_id=article.id) }}" method="post">
+                <div class="form-group">
+                    <input type="text" placeholder="请填写评论" name="content" class="form-control">
+                </div>
+                {% for message in get_flashed_messages() %}
+                    <div class="form-group">
+                        <div class="text-danger">{{ message }}</div>
+                    </div>
+                {% endfor %}
+                <div class="form-group" style="text-align: right;">
+                    <button class="btn btn-primary">评论</button>
+                </div>
+            </form>
+            <ul class="comment-group">
+                {% for comment in article.comments %}
+                    <li>
+                        <div class="user-info">
+                            <img class="avatar" src="{{ url_for('static',filename=comment.author.avartar) }}" alt="">
+                            <span class="username">{{ comment.author.username }}</span>
+                            <span class="create-time">{{ comment.create_time }}</span>
+                        </div>
+                        <p class="comment-content" style="margin-bottom: 0px">{{ comment.content }}</p>
+                        <p style="margin-bottom: 20px"> <a href="javascript:;" class="reply_btn" style="float: right">回复</a></p>
+                            <ul class="comment-group1">
+                                {% for comme in comment.children_comments %}
+                                    <li style="list-style: none">
+                                        <div class="user-info">
+                                            <img class="avatar" src="{{ url_for('static',filename=comme.author.avartar) }}" alt="">
+                                            <span class="username">{{ comme.author.username }}</span>
+                                            <span class="create-time">{{ comme.create_time }}</span>
+                                        </div>
+                                        {% if comme.flag == '###' %}
+                                            <p class="comment-content" style="margin-bottom: 0px">{{ comme.content }}</p>
+                                        {% else %}
+                                            <p class="comment-content" style="margin-bottom: 0px">回复 <span style="color: blue">{{ comme.flag }}:</span>  {{ comme.content }}</p>
+                                        {% endif %}
+                                        <p style="margin-bottom: 20px"> <a href="javascript:;" class="reply_btn" style="float: right">回复</a></p>
+
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+        <div class="col"></div>
+    </div>
+    <script type="text/javascript">
+        $(function () {
+            //页面加载完毕后开始执行的事件
+            $(".reply_btn").click(function () {
+                $(".reply_textarea").remove();
+                {#$(this).parent().append("<div class='reply_textarea'><form action='{{ url_for("comment_api.secondcommentview",commment_id=comment.id) }}'><input type='text'></form><br/><button type='submit'>发表</button></div>");#}
+            });
+        });
+    </script>
+{% endblock %}
+
